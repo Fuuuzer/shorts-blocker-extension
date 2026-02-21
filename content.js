@@ -2,16 +2,20 @@
 let lastPath = location.pathname;
 
 function createWarningOverlay() {
-  const overlay = document.createElement("div");
-  overlay.style.position = "fixed";
-  overlay.style.zIndex = "999999";
-  overlay.style.width = "100%";
-  // overlay.style.height = "100%";
-  overlay.textContent = "Você quer entrar no loop?";
-  overlay.style.backgroundColor = "red";
-  document.body.style.overflow = "hidden";
-  console.log("overlay criado");
-  document.body.appendChild(overlay);
+  if (!document.getElementById("shorts-blocker-overlay")) {
+    const overlay = document.createElement("div");
+    overlay.style.position = "fixed";
+    overlay.id = "shorts-blocker-overlay";
+    overlay.style.zIndex = "999999";
+    overlay.style.width = "100vw";
+    overlay.style.height = "100vh";
+    overlay.textContent = "Para de assistir shorts e vá fazer algo da vida";
+    overlay.style.fontSize = "5rem";
+    overlay.style.backgroundColor = "red";
+    document.body.style.overflow = "hidden";
+    // console.log("overlay criado");
+    document.body.appendChild(overlay);
+  }
 }
 
 function pauseVideos() {
@@ -20,7 +24,7 @@ function pauseVideos() {
   const intervalPauseVideos = setInterval(() => {
     videos.forEach((video) => {
       video.pause();
-      console.log("video pausado");
+      // console.log("video pausado");
       if (video.paused) {
         clearInterval(intervalPauseVideos);
       }
@@ -31,7 +35,7 @@ function pauseVideos() {
 
 function checkIfUrlIsShorts() {
   if (location.pathname.startsWith("/shorts")) {
-    console.log("você está na aba shorts");
+    // console.log("você está na aba shorts");
     pauseVideos();
   }
 }
@@ -40,7 +44,7 @@ checkIfUrlIsShorts();
 document.addEventListener("yt-navigate-finish", () => {
   if (lastPath !== location.pathname) {
     lastPath = location.pathname;
-    console.log("Mudou o path");
+    // console.log("Mudou o path");
     checkIfUrlIsShorts();
   }
 });
