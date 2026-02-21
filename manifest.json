@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Shorts-blocker",
+  "version": "1",
+  "description": "Extensão responsável por bloquear videos curtos no youtube shorts, visando diminuir o impacto de dopamina rápida nos usuários",
+  "content_scripts": [
+    {
+      "js": ["content.js"],
+      "matches": ["https://*.youtube.com/*"]
+    }
+  ]
+}
