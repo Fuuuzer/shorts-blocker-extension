@@ -3,27 +3,62 @@ let lastPath = location.pathname;
 let observer = null;
 let observerActive = false;
 const overlay = document.createElement("div");
+overlay.style.display = "none";
+const closeButton = document.createElement("button");
+closeButton.addEventListener("click", () => {
+  hideOverlay();
+});
 
-function removeOverlay() {
-  if (overlay) overlay.remove();
+function createText() {
+  const text = document.createElement("p");
+  text.textContent = "Você perdeu x minutos assistindo shorts";
+  text.style.color = "white";
+  text.style.fontSize = "4rem";
+  text.style.padding = "2rem";
+  text.style.background = "#c46060";
+
+  overlay.appendChild(text);
+}
+
+function createCloseButton() {
+  closeButton.textContent = "✕";
+  closeButton.style.position = "absolute";
+  closeButton.style.top = "0px";
+  closeButton.style.right = "0px";
+
+  overlay.appendChild(closeButton);
+}
+
+function showOverlay() {
+  overlay.style.display = "block";
+}
+
+function hideOverlay() {
+  if (overlay) overlay.style.display = "none";
+  resumeVideos();
+  observer.disconnect();
 }
 
 function createWarningOverlay() {
   if (!document.getElementById("shorts-blocker-overlay")) {
-    overlay.style.position = "fixed";
+    Object.assign(overlay.style, {
+      position: "fixed",
+      zIndex: "23423423423",
+      width: "100vw",
+      height: "100vh",
+      overflow: "hidden",
+      backgroundColor: "rgba(0, 0, 0, 0.7)",
+    });
     overlay.id = "shorts-blocker-overlay";
-    overlay.style.zIndex = "999999";
-    overlay.style.width = "50vw";
-    overlay.style.height = "50vh";
-    overlay.textContent = "Para de assistir shorts e vá fazer algo da vida";
-    overlay.style.fontSize = "5rem";
-    overlay.style.color = "white";
-    overlay.style.backgroundColor = "red";
-    document.body.style.overflow = "hidden";
-    // console.log("overlay criado");
     document.body.appendChild(overlay);
+    createText();
+    createCloseButton();
+    observerActive = false;
   }
 }
+// function removeOverlay() {
+//   if (overlay) overlay.remove();
+// }
 
 function muteVideos() {
   const videos = document.querySelectorAll("video");
@@ -41,6 +76,14 @@ function pauseVideos() {
   createWarningOverlay();
 }
 
+function resumeVideos() {
+  const videos = document.querySelectorAll("video");
+  videos.forEach((video) => {
+    video.play();
+    // console.log("video pausado");
+  });
+}
+
 function checkIfUrlIsShorts() {
   if (location.pathname.startsWith("/shorts")) {
     // console.log("você está na aba shorts");
@@ -50,7 +93,7 @@ function checkIfUrlIsShorts() {
     if (observer) {
       observer.disconnect();
       observerActive = false;
-      removeOverlay();
+      hideOverlay();
     }
   }
 }
@@ -68,7 +111,7 @@ function startObserver() {
   if (!observer) {
     observer = new MutationObserver(() => {
       if (location.pathname.startsWith("/shorts")) {
-        createWarningOverlay();
+        showOverlay();
         pauseVideos();
       }
     });
