@@ -2,6 +2,7 @@
 let lastPath = location.pathname;
 let observer = null;
 let observerActive = false;
+let blockingEnabled = true;
 const overlay = document.createElement("div");
 overlay.style.display = "none";
 const closeButton = document.createElement("button");
@@ -35,8 +36,8 @@ function showOverlay() {
 
 function hideOverlay() {
   if (overlay) overlay.style.display = "none";
+  blockingEnabled = false;
   resumeVideos();
-  observer.disconnect();
 }
 
 function createWarningOverlay() {
@@ -85,7 +86,7 @@ function resumeVideos() {
 }
 
 function checkIfUrlIsShorts() {
-  if (location.pathname.startsWith("/shorts")) {
+  if (location.pathname.startsWith("/shorts") && blockingEnabled) {
     // console.log("você está na aba shorts");
     pauseVideos();
     startObserver();
@@ -94,6 +95,8 @@ function checkIfUrlIsShorts() {
       observer.disconnect();
       observerActive = false;
       hideOverlay();
+      resumeVideos();
+      blockingEnabled = true;
     }
   }
 }
@@ -110,7 +113,7 @@ document.addEventListener("yt-navigate-finish", () => {
 function startObserver() {
   if (!observer) {
     observer = new MutationObserver(() => {
-      if (location.pathname.startsWith("/shorts")) {
+      if (location.pathname.startsWith("/shorts") && blockingEnabled) {
         showOverlay();
         pauseVideos();
       }
