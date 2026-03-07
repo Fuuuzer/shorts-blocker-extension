@@ -10,16 +10,16 @@ closeButton.addEventListener("click", () => {
   hideOverlay();
 });
 
-function createText() {
-  const text = document.createElement("p");
-  text.textContent = "Você perdeu x minutos assistindo shorts";
-  text.style.color = "white";
-  text.style.fontSize = "4rem";
-  text.style.padding = "2rem";
-  text.style.background = "#c46060";
+// function createText() {
+//   const text = document.createElement("p");
+//   text.textContent = "Você perdeu x minutos assistindo shorts";
+//   text.style.color = "white";
+//   text.style.fontSize = "4rem";
+//   text.style.padding = "2rem";
+//   text.style.background = "#c46060";
 
-  overlay.appendChild(text);
-}
+//   overlay.appendChild(text);
+// }
 
 function createCloseButton() {
   closeButton.textContent = "✕";
@@ -48,11 +48,18 @@ function createWarningOverlay() {
       width: "100vw",
       height: "100vh",
       overflow: "hidden",
-      backgroundColor: "rgba(0, 0, 0, 0.7)",
+      backgroundColor: "white",
     });
+    const flashAnimation = overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
+      duration: 5000,
+      fill: "forwards",
+    });
+    flashAnimation.onfinish = () => {
+      overlay.remove();
+    };
     overlay.id = "shorts-blocker-overlay";
     document.body.appendChild(overlay);
-    createText();
+    // createText();
     createCloseButton();
     observerActive = false;
   }
@@ -81,7 +88,6 @@ function resumeVideos() {
   const videos = document.querySelectorAll("video");
   videos.forEach((video) => {
     video.play();
-    // console.log("video pausado");
   });
 }
 
@@ -111,7 +117,9 @@ document.addEventListener("yt-navigate-finish", () => {
 });
 
 function startObserver() {
-  if (!observer) {
+  const containerShortsDiv = document.getElementById("short-video-container");
+
+  if (!observer && containerShortsDiv) {
     observer = new MutationObserver(() => {
       if (location.pathname.startsWith("/shorts") && blockingEnabled) {
         showOverlay();
@@ -119,14 +127,14 @@ function startObserver() {
       }
     });
     observerActive = true;
-    observer.observe(document.body, {
+    observer.observe(containerShortsDiv, {
       childList: true,
       subtree: true,
     });
   }
 
-  if (observer && observerActive === false) {
-    observer.observe(document.body, {
+  if (observer && observerActive === false && containerShortsDiv) {
+    observer.observe(containerShortsDiv, {
       childList: true,
       subtree: true,
     });
