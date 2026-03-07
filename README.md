@@ -1,7 +1,5 @@
 # shorts-blocker-extension
 
-<h2>Uma estensão que tem o intuito de bloquear os videos curtos das redes sociais.</h2>
-<ul>
-  <h3>O que já foi adicionado:</h3>
-  <li>Bloquear shorts no youtube.</li>
-</ul>
+<h2>Entrou no shorts? Vai tomar a perfeitinha.</h2>
+
+![flash](https://github.com/user-attachments/assets/fc758e97-192a-4926-86fc-afeb050b73e1)
