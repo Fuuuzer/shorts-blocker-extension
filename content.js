@@ -3,6 +3,8 @@ let lastPath = location.pathname;
 let observer = null;
 let observerActive = false;
 let blockingEnabled = true;
+const audioFlash = new Audio(chrome.runtime.getURL("flashAudio.mp3"));
+audioFlash.volume = 0.2;
 
 const closeButton = document.createElement("button");
 closeButton.addEventListener("click", () => {
@@ -42,6 +44,7 @@ function hideOverlay() {
 function createWarningOverlay() {
   const overlay = document.createElement("div");
   // overlay.style.display = "none";
+  if (document.getElementById("shorts-blocker-overlay")) return;
 
   Object.assign(overlay.style, {
     position: "fixed",
@@ -52,7 +55,7 @@ function createWarningOverlay() {
     backgroundColor: "white",
   });
   const flashAnimation = overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
-    duration: 5000,
+    duration: 4000,
     fill: "forwards",
   });
   flashAnimation.onfinish = () => {
@@ -60,10 +63,12 @@ function createWarningOverlay() {
   };
   overlay.id = "shorts-blocker-overlay";
   document.body.appendChild(overlay);
+  audioFlash.play();
   // createText();
   // createCloseButton();
   observerActive = false;
 }
+
 // function removeOverlay() {
 //   if (overlay) overlay.remove();
 // }
@@ -100,7 +105,6 @@ function checkIfUrlIsShorts() {
     if (observer) {
       observer.disconnect();
       observerActive = false;
-      hideOverlay();
       resumeVideos();
       blockingEnabled = true;
     }
@@ -117,27 +121,22 @@ document.addEventListener("yt-navigate-finish", () => {
 });
 
 function startObserver() {
-  const containerShortsDiv = document.getElementById("short-video-container");
+  const checkContainer = setInterval(() => {
+    const containerShortsDiv = document.getElementById("short-video-container");
 
-  if (!observer && containerShortsDiv) {
-    observer = new MutationObserver(() => {
-      if (location.pathname.startsWith("/shorts") && blockingEnabled) {
-        showOverlay();
-        pauseVideos();
-      }
-    });
-    observerActive = true;
-    observer.observe(containerShortsDiv, {
-      childList: true,
-      subtree: true,
-    });
-  }
+    if (containerShortsDiv) {
+      clearInterval(checkContainer);
 
-  if (observer && observerActive === false && containerShortsDiv) {
-    observer.observe(containerShortsDiv, {
-      childList: true,
-      subtree: true,
-    });
-    observerActive = true;
-  }
+      observer = new MutationObserver(() => {
+        if (location.pathname.startsWith("/shorts") && blockingEnabled) {
+          pauseVideos();
+        }
+      });
+      observer.observe(containerShortsDiv, {
+        childList: true,
+        subtree: true,
+      });
+      observerActive = true;
+    }
+  }, 500);
 }

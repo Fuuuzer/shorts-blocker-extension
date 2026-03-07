@@ -2,6 +2,12 @@
   "manifest_version": 3,
   "name": "Shorts-blocker",
   "version": "1",
+  "web_accessible_resources": [
+    {
+      "resources": ["flashAudio.mp3"],
+      "matches": ["https://www.youtube.com/*"]
+    }
+  ],
   "description": "Extensão responsável por bloquear videos curtos no youtube shorts, visando diminuir o impacto de dopamina rápida nos usuários",
   "content_scripts": [
     {
