@@ -3,8 +3,7 @@ let lastPath = location.pathname;
 let observer = null;
 let observerActive = false;
 let blockingEnabled = true;
-const overlay = document.createElement("div");
-overlay.style.display = "none";
+
 const closeButton = document.createElement("button");
 closeButton.addEventListener("click", () => {
   hideOverlay();
@@ -21,18 +20,18 @@ closeButton.addEventListener("click", () => {
 //   overlay.appendChild(text);
 // }
 
-function createCloseButton() {
-  closeButton.textContent = "✕";
-  closeButton.style.position = "absolute";
-  closeButton.style.top = "0px";
-  closeButton.style.right = "0px";
+// function createCloseButton() {
+//   closeButton.textContent = "✕";
+//   closeButton.style.position = "absolute";
+//   closeButton.style.top = "0px";
+//   closeButton.style.right = "0px";
 
-  overlay.appendChild(closeButton);
-}
+//   overlay.appendChild(closeButton);
+// }
 
-function showOverlay() {
-  overlay.style.display = "block";
-}
+// function showOverlay() {
+//   overlay.style.display = "block";
+// }
 
 function hideOverlay() {
   if (overlay) overlay.style.display = "none";
@@ -41,28 +40,29 @@ function hideOverlay() {
 }
 
 function createWarningOverlay() {
-  if (!document.getElementById("shorts-blocker-overlay")) {
-    Object.assign(overlay.style, {
-      position: "fixed",
-      zIndex: "23423423423",
-      width: "100vw",
-      height: "100vh",
-      overflow: "hidden",
-      backgroundColor: "white",
-    });
-    const flashAnimation = overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
-      duration: 5000,
-      fill: "forwards",
-    });
-    flashAnimation.onfinish = () => {
-      overlay.remove();
-    };
-    overlay.id = "shorts-blocker-overlay";
-    document.body.appendChild(overlay);
-    // createText();
-    createCloseButton();
-    observerActive = false;
-  }
+  const overlay = document.createElement("div");
+  // overlay.style.display = "none";
+
+  Object.assign(overlay.style, {
+    position: "fixed",
+    zIndex: "23423423423",
+    width: "100vw",
+    height: "100vh",
+    overflow: "hidden",
+    backgroundColor: "white",
+  });
+  const flashAnimation = overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
+    duration: 5000,
+    fill: "forwards",
+  });
+  flashAnimation.onfinish = () => {
+    overlay.remove();
+  };
+  overlay.id = "shorts-blocker-overlay";
+  document.body.appendChild(overlay);
+  // createText();
+  // createCloseButton();
+  observerActive = false;
 }
 // function removeOverlay() {
 //   if (overlay) overlay.remove();
