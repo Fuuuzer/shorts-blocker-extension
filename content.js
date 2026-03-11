@@ -44,7 +44,7 @@ function hideOverlay() {
 function createWarningOverlay() {
   const overlay = document.createElement("div");
   // overlay.style.display = "none";
-  if (document.getElementById("shorts-blocker-overlay")) return;
+  // if (document.getElementById("shorts-blocker-overlay")) return;
 
   Object.assign(overlay.style, {
     position: "fixed",
@@ -61,8 +61,9 @@ function createWarningOverlay() {
   flashAnimation.onfinish = () => {
     overlay.remove();
   };
-  overlay.id = "shorts-blocker-overlay";
+  // overlay.id = "shorts-blocker-overlay";
   document.body.appendChild(overlay);
+  audioFlash.currentTime = 0;
   audioFlash.play();
   // createText();
   // createCloseButton();
@@ -86,6 +87,14 @@ function pauseVideos() {
     video.pause();
     // console.log("video pausado");
   });
+
+  setTimeout(() => {
+    createWarningOverlay();
+  }, 1000);
+
+  setTimeout(() => {
+    createWarningOverlay();
+  }, 3000);
   createWarningOverlay();
 }
 
