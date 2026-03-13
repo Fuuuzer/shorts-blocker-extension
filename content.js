@@ -4,7 +4,8 @@ let observer = null;
 let observerActive = false;
 let blockingEnabled = true;
 const audioFlash = new Audio(chrome.runtime.getURL("flashAudio.mp3"));
-audioFlash.volume = 0.2;
+audioFlash.volume = 0.3;
+let isFlashing = false;
 
 const closeButton = document.createElement("button");
 closeButton.addEventListener("click", () => {
@@ -86,16 +87,18 @@ function pauseVideos() {
   videos.forEach((video) => {
     video.pause();
     // console.log("video pausado");
+
+    if (isFlashing) return;
+    isFlashing = true;
+
+    createWarningOverlay();
+
+    setTimeout(() => {
+      createWarningOverlay();
+
+      isFlashing = false;
+    }, 2000);
   });
-
-  setTimeout(() => {
-    createWarningOverlay();
-  }, 1000);
-
-  setTimeout(() => {
-    createWarningOverlay();
-  }, 3000);
-  createWarningOverlay();
 }
 
 function resumeVideos() {
